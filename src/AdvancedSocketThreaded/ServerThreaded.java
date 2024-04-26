@@ -86,9 +86,9 @@ public class ServerThreaded implements Runnable
                 {                               
                     //System.out.println("Are we in the while? as a reader");
                     int temp = in.readInt();
-                    if (myId == intCounter.turn){
+                    if (myId == intCounter.getTurn()){
                         intCounter.addNumber(myId, 10 - Math.abs((int)(Math.random()*10)-temp));
-                        intCounter.turn += 1;
+                        intCounter.nextTurn();
                         //intCounter.turn %= ;
                     }
                     //System.out.println("We recieved an "+temp);

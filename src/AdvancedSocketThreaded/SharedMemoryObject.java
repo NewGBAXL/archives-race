@@ -23,6 +23,8 @@ public class SharedMemoryObject implements java.io.Serializable
     
     private int turn; // Variable to indicate whose turn it is
     
+    private boolean isDirty = false;
+    
     public SharedMemoryObject()
     {
         myLock = new ReentrantLock();
@@ -32,6 +34,20 @@ public class SharedMemoryObject implements java.io.Serializable
         }
         monsterPosition = 0; // Initialize monster position
         turn = 0; // Initialize turn
+        
+    }
+    
+    public void addNumber(int n, int roll)
+    {
+        if(n <10)
+        {   
+            System.out.println("BEFORE adding "+n+": "+playerPositions[n]);
+            myLock.lock();
+            playerPositions[n] += roll;
+            myLock.unlock();
+            System.out.println("After adding "+n+": "+playerPositions[n]);
+            isDirty = true;
+        }
     }
     
     /**
@@ -70,6 +86,12 @@ public class SharedMemoryObject implements java.io.Serializable
         myLock.lock();
         turn = (turn + 1) % playerPositions.length;
         myLock.unlock();
+    }
+    
+    //return the turn
+    public int getTurn()
+    {
+        return turn;
     }
     
     /**

@@ -2,14 +2,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package AdvancedSocketThreaded;
+package threading1;
 
+import AdvancedSocketThreaded.MyFirstThread;
+import AdvancedSocketThreaded.ServerListener;
+import AdvancedSocketThreaded.ThreadedClient;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+
 
 
 public class Threading1 {
