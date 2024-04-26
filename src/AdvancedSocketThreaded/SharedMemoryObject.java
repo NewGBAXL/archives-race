@@ -18,6 +18,7 @@ public class SharedMemoryObject implements java.io.Serializable
 {
     ReentrantLock myLock;    
     private int[] playerPositions; // Variable to store the positions of up to 3 clients
+    //private int numPlayers;
     
     private int monsterPosition; // Variable to store the position of the monster
     
@@ -25,10 +26,10 @@ public class SharedMemoryObject implements java.io.Serializable
     
     private boolean isDirty = false;
     
-    public SharedMemoryObject()
+    public SharedMemoryObject(int numPlayers)
     {
         myLock = new ReentrantLock();
-        playerPositions = new int[3];
+        playerPositions = new int[(numPlayers==0)?10:numPlayers];
         for (int i = 0; i < playerPositions.length; i++) {
             playerPositions[i] = 10; // Initialize player positions to 10
         }

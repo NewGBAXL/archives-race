@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.Scanner;
 
 /**
  *
@@ -23,7 +24,7 @@ public class ServerListener {
     //int connectedClients;
     int connectionCount;
     public ServerListener() {
-        intCounter = new SharedMemoryObject();
+        intCounter = new SharedMemoryObject(0);
 
         //connectedClients = 0;
         connectionCount = 0;
@@ -38,7 +39,17 @@ public class ServerListener {
 
     public void BuisnessLogic() {
         //int connectionCount = 0;
-        while (connectionCount < 3) {
+        //fix this to check if S pressed and then send the shared memory object to all clients
+        while (connectionCount < 10) {
+            Scanner inChar = new Scanner(System.in);
+            String startGame = inChar.next();
+            if (startGame.equals("S")) {
+				if (connectionCount > 1) {
+                    break;
+                } else {
+                    System.out.println("Not enough clients connected to start the game.");
+				}
+			}
             Socket con;
             try {
                 System.out.println("Listening for new clients.");
@@ -56,7 +67,7 @@ public class ServerListener {
 
         //if (connectedClients  4) {
             // Create and populate the shared memory object
-            SharedMemoryObject intCounter = new SharedMemoryObject();
+            SharedMemoryObject intCounter = new SharedMemoryObject(connectionCount);
             // Set user's turn to 0
             intCounter.setIsDirty(true); // Set dirty flag to notify clients about the updated shared memory object
 

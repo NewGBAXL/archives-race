@@ -27,6 +27,7 @@ public class Threading1 {
         String choice = input.next();
         if(choice.equals("S"))
         {
+            System.out.println("Enter S to start the game with the current players");
             ServerListener server = new ServerListener();
             server.BuisnessLogic();
         }
@@ -108,7 +109,7 @@ public class Threading1 {
     
 public static void tpools()
     {
-        ExecutorService ex = Executors.newFixedThreadPool(3);
+        ExecutorService ex = Executors.newFixedThreadPool(10);
         ex.execute(new MyFirstThread("123456789",100));
         ex.execute(new MyFirstThread("ABCDEFGHIJKLMNOPQRSTUVWXYZ",100));
         ex.execute(new MyFirstThread("!@#$%^&*()+-_=",100));
