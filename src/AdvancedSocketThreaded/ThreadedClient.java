@@ -42,6 +42,7 @@ public class ThreadedClient implements Runnable {
             
             System.out.println("Received Shared Memory Object:");
             System.out.println(intCounter.toString());
+            
 
             if (writer) {
                 //ObjectOutputStream out = new ObjectOutputStream(con.getOutputStream());
