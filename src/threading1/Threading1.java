@@ -18,7 +18,9 @@ import java.util.logging.Logger;
 
 public class Threading1 {
 
-    private static SharedMemoryObject intCounter;
+    static int MAX_PLAYERS = 10;
+    
+    private static SharedMemoryObject intCounter = new SharedMemoryObject(MAX_PLAYERS);
     
     public static void main(String[] args)
     {
@@ -30,7 +32,7 @@ public class Threading1 {
         {
             ServerListener server = new ServerListener();
             System.out.println("Enter number of players: ");
-            int MAX_PLAYERS = input.nextInt();
+            MAX_PLAYERS = input.nextInt();
             server.BuisnessLogic(MAX_PLAYERS);
         }
         else
