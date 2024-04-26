@@ -27,18 +27,23 @@ public class ThreadedClient implements Runnable {
     //I can make this static as there will only be two threads on the client.
     static int myId;
 
-    public ThreadedClient(Socket c, Boolean w) {
+    public ThreadedClient(Socket c, Boolean w, SharedMemoryObject so) {
         con = c;
         writer = w;
+        this.intCounter = so;
     }
 
     @Override
     public void run() {
         System.out.println("Inside Run - Thread started");
+        if (intCounter == null) {
+            System.out.println("intCounter is null. Exiting...");
+            return;
+        }
         try {
             jin = new Scanner(System.in);
             ObjectOutputStream out = new ObjectOutputStream(con.getOutputStream());
-            //ObjectInputStream in = new ObjectInputStream(con.getInputStream());
+            ObjectInputStream in = new ObjectInputStream(con.getInputStream());
 
             if (writer) {
                 //ObjectOutputStream out = new ObjectOutputStream(con.getOutputStream());
@@ -55,7 +60,7 @@ public class ThreadedClient implements Runnable {
                     //Can use Out 
                 }
             } else {
-                ObjectInputStream in = new ObjectInputStream(con.getInputStream());
+                //ObjectInputStream in = new ObjectInputStream(con.getInputStream());
                 myId = in.readInt();
                 System.out.println("My User ID is: " + myId);
                 while (con.isConnected()) {

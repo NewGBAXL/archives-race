@@ -6,6 +6,7 @@ package threading1;
 
 import AdvancedSocketThreaded.MyFirstThread;
 import AdvancedSocketThreaded.ServerListener;
+import AdvancedSocketThreaded.SharedMemoryObject;
 import AdvancedSocketThreaded.ThreadedClient;
 import java.io.IOException;
 import java.net.Socket;
@@ -17,6 +18,8 @@ import java.util.logging.Logger;
 
 public class Threading1 {
 
+    private static SharedMemoryObject intCounter;
+    
     public static void main(String[] args)
     {
         
@@ -34,8 +37,8 @@ public class Threading1 {
         {
             try {
                 Socket con = new Socket("127.0.0.1",8888);
-                ThreadedClient writerS = new ThreadedClient(con,true);
-                ThreadedClient readerS = new ThreadedClient(con,false);
+                ThreadedClient writerS = new ThreadedClient(con,true, intCounter);
+                ThreadedClient readerS = new ThreadedClient(con,false, intCounter);
                 System.out.println("Initiating Writer");
                 Thread t1 = new Thread(writerS);
                 System.out.println("Initiating Reader");
