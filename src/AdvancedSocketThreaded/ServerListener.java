@@ -20,6 +20,7 @@ public class ServerListener {
 
     SharedMemoryObject intCounter;
     ExecutorService ex;
+    Socket clients[];
     ServerSocket serve;
     //int connectedClients;
     int connectionCount;
@@ -35,25 +36,19 @@ public class ServerListener {
             System.out.println("ERROR Creating the server: " + e.getMessage());
         }
         ex = Executors.newFixedThreadPool(10);
+        clients = new Socket[10];
     }
 
-    public void BuisnessLogic() {
+    public void BuisnessLogic(int MAXPLAYERS) {
         //int connectionCount = 0;
         //fix this to check if S pressed and then send the shared memory object to all clients
-        while (connectionCount < 10) {
-            Scanner inChar = new Scanner(System.in);
-            String startGame = inChar.next();
-            if (startGame.equals("S")) {
-				if (connectionCount > 1) {
-                    break;
-                } else {
-                    System.out.println("Not enough clients connected to start the game.");
-				}
-			}
+        while (connectionCount < MAXPLAYERS) {
             Socket con;
-            try {
+            try {                
+                
                 System.out.println("Listening for new clients.");
                 con = serve.accept();
+                clients[connectionCount] = con;
                 ex.execute(new ServerThreaded(con, true, intCounter, connectionCount));
                 ex.execute(new ServerThreaded(con, false, intCounter, connectionCount));
                 connectionCount++;
@@ -65,16 +60,18 @@ public class ServerListener {
 
         }
 
-        //if (connectedClients  4) {
+        if (connectionCount == MAXPLAYERS) {
+            System.out.println("Setting up game... ");
+            
             // Create and populate the shared memory object
             SharedMemoryObject intCounter = new SharedMemoryObject(connectionCount);
             // Set user's turn to 0
             intCounter.setIsDirty(true); // Set dirty flag to notify clients about the updated shared memory object
 
-            /*
+            
             // Send the shared memory object to all connected clients
             for (int i = 0; i < connectionCount; i++) {
-                //Socket clientSocket = clients[i]; // Assuming 'clients' is an array of Socket objects containing the client connections
+                Socket clientSocket = clients[i]; // Assuming 'clients' is an array of Socket objects containing the client connections
                 try {
                     ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
                     out.writeObject(intCounter);
@@ -83,9 +80,7 @@ public class ServerListener {
                     System.out.println("Error sending shared memory object to client " + i + ": " + e.getMessage());
                     // Handle the error if necessary
                 }
-            }*/
-            
-        //}
+            }
 
             try {
                 serve.close();
@@ -95,5 +90,5 @@ public class ServerListener {
 
             }
         }
-    
     }
+}
