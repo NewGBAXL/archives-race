@@ -42,8 +42,11 @@ public class ThreadedClient implements Runnable {
                 ObjectOutputStream out = new ObjectOutputStream(con.getOutputStream());
                 while (con.isConnected()) {
                     if (intCounter != null /*&& new ObjectOutputStream(con.getOutputStream())*/) {
-                        System.out.println("Enter a guess between 0 and 9: ");
-                        //int rand = (int)(Math.random()*requestedNumber);
+                        System.out.println("Enter a guess between 1 and 10: ");
+                        int requestedNumber = 0;
+                        do {
+                            requestedNumber = jin.nextInt();
+                        } while (requestedNumber > 10 || requestedNumber < 1);
                         out.writeInt(jin.nextInt());
                         out.flush();
                     }
@@ -58,8 +61,9 @@ public class ThreadedClient implements Runnable {
                     try {
 
                         intCounter = (SharedMemoryObject) in.readObject();
+                        System.out.println(intCounter.toString());
                         //Can use In.-     
-                        System.out.println(intCounter);
+                        //System.out.println(intCounter);
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(ThreadedClient.class.getName()).log(Level.SEVERE, null, ex);
                     }

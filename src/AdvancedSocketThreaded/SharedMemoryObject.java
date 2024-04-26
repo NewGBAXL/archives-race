@@ -17,7 +17,12 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SharedMemoryObject implements java.io.Serializable
 {
     ReentrantLock myLock;    
-    private int[] playerPositions; // Variable to store the positions of up to 3 clients
+    private int[] playerPositions; // Variable to store the positions of up to 10 clients
+    private int[] playerHealth; // Variable to store the health of up to 10 clients
+    
+    //should this be a double?
+    private int[] spaceSpeed = new int[100]; // Variable to store the speed of each space
+
     //private int numPlayers;
     
     private int monsterPosition; // Variable to store the position of the monster
@@ -33,6 +38,13 @@ public class SharedMemoryObject implements java.io.Serializable
         for (int i = 0; i < playerPositions.length; i++) {
             playerPositions[i] = 10; // Initialize player positions to 10
         }
+        playerHealth = new int[(numPlayers==0)?10:numPlayers];
+        for (int i = 0; i < playerHealth.length; i++) {
+            playerHealth[i] = 1; // Initialize player health to 1
+        }
+        for (int i = 0; i < spaceSpeed.length; i++) {
+            spaceSpeed[i] = 1; // Initialize space speed to 1
+        }
         monsterPosition = 0; // Initialize monster position
         turn = 0; // Initialize turn
         
@@ -40,11 +52,16 @@ public class SharedMemoryObject implements java.io.Serializable
     
     public void addNumber(int n, int roll)
     {
-        if(n <10)
+        if(n <10 && playerHealth[n] > 0)
         {   
             System.out.println("BEFORE adding "+n+": "+playerPositions[n]);
             myLock.lock();
-            playerPositions[n] += roll;
+            playerPositions[n] += (int)(spaceSpeed[playerPositions[n]] * roll);
+            if(playerPositions[n] >= 100)
+			{
+				playerPositions[n] = 100;
+				System.out.println("Player "+n+" wins!");
+			}
             myLock.unlock();
             System.out.println("After adding "+n+": "+playerPositions[n]);
             isDirty = true;
@@ -75,6 +92,11 @@ public class SharedMemoryObject implements java.io.Serializable
     {
         myLock.lock();
         monsterPosition += steps;
+        for (int i = 0; i < playerPositions.length; ++i) {
+			if (playerPositions[i] <= monsterPosition && playerHealth[i] > 0) {
+				--playerHealth[i];
+			}
+		}
         myLock.unlock();
         isDirty = true;
     }
@@ -85,7 +107,9 @@ public class SharedMemoryObject implements java.io.Serializable
     public void nextTurn()
     {
         myLock.lock();
-        turn = (turn + 1) % playerPositions.length;
+        do {
+            turn = (turn + 1) % playerPositions.length;
+        } while (playerPositions[turn] == 0);
         myLock.unlock();
     }
     

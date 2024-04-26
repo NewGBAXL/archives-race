@@ -23,6 +23,7 @@ public class ServerThreaded implements Runnable
     int requestedNumber;
     SharedMemoryObject intCounter;
     int myId;
+    int monster = 0;
     
     
     public ServerThreaded(Socket c, boolean w, SharedMemoryObject so, int conId)
@@ -90,6 +91,11 @@ public class ServerThreaded implements Runnable
                         intCounter.addNumber(myId, 10 - Math.abs((int)(Math.random()*10)-temp));
                         intCounter.nextTurn();
                         //intCounter.turn %= ;
+
+                        //not sure if this check is needed, this logic also seems a little messy
+                        if (intCounter.getTurn() == 0){
+							intCounter.moveMonster((int)(Math.random()*6)+1);
+						}
                     }
                     //System.out.println("We recieved an "+temp);
                     //intCounter.addNumber(temp);
