@@ -38,11 +38,7 @@ public class ThreadedClient implements Runnable {
         try {
             jin = new Scanner(System.in);
             ObjectOutputStream out = new ObjectOutputStream(con.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(con.getInputStream());
-            
-            System.out.println("Received Shared Memory Object:");
-            System.out.println(intCounter.toString());
-            
+            //ObjectInputStream in = new ObjectInputStream(con.getInputStream());
 
             if (writer) {
                 //ObjectOutputStream out = new ObjectOutputStream(con.getOutputStream());
@@ -59,11 +55,15 @@ public class ThreadedClient implements Runnable {
                     //Can use Out 
                 }
             } else {
-                //ObjectInputStream in = new ObjectInputStream(con.getInputStream());
+                ObjectInputStream in = new ObjectInputStream(con.getInputStream());
                 myId = in.readInt();
                 System.out.println("My User ID is: " + myId);
                 while (con.isConnected()) {
                     System.out.println("Inside Reader");
+                    
+                    System.out.println("Received Shared Memory Object: ");
+                    System.out.println(intCounter.toString());
+                    
                     try {
 
                         intCounter = (SharedMemoryObject) in.readObject();
