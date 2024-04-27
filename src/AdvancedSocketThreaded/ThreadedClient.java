@@ -25,12 +25,15 @@ public class ThreadedClient implements Runnable {
     @Override
     public void run() {
         System.out.println("Inside Run - Thread started");
-        try {
-            jin = new Scanner(System.in);
-            ObjectOutputStream out = new ObjectOutputStream(con.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(con.getInputStream());
+       
+
+
 
             if (writer) {
+                try{
+                    jin = new Scanner(System.in);
+                    ObjectOutputStream out = new ObjectOutputStream(con.getOutputStream());
+                
                 while (con.isConnected()) {
                     if (intCounter != null && intCounter.getTurn() == myId) {
                         System.out.println("Enter a guess between 1 and 10: ");
@@ -39,6 +42,8 @@ public class ThreadedClient implements Runnable {
                         out.writeInt(jin.nextInt());
                         out.flush();
                     }
+                
+                
                     try
                     {
                         Thread.sleep(500);
@@ -48,7 +53,15 @@ public class ThreadedClient implements Runnable {
                         //Something really went wrong.
                     }
                 }
-            } else {
+                }
+                catch(IOException e)
+                {
+                    System.out.println("Error inside client reader. "+e);
+                }
+            }
+            else {
+                try{
+                ObjectInputStream in = new ObjectInputStream(con.getInputStream());
                 myId = in.readInt();
                 System.out.println("My User ID is: " + myId);
                 while (con.isConnected()) {
@@ -66,13 +79,20 @@ public class ThreadedClient implements Runnable {
                         //Something really went wrong.
                     }
                 }
-            }
-
-        } catch (IOException e) {
-            System.out.println("ERROR with Data Writer/Reader: " + e.toString());
-        } catch (ClassNotFoundException ex) {
+           
+                }
+                     catch(IOException e)
+                        {
+                        System.out.println("Error inside the client reader. "+e);
+                        }
+              catch (ClassNotFoundException ex) {
             Logger.getLogger(ThreadedClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+            }
+
+        /*} catch (IOException e) {
+            System.out.println("ERROR with Data Writer/Reader: " + e.toString());
+        }*/
         System.out.println("Done with while connected");
     }
 }

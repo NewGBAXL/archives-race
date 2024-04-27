@@ -25,9 +25,11 @@ public class Threading1 {
         String choice = input.next();
         if(choice.equals("S"))
         {
-            ServerListener server = new ServerListener();
+           
             System.out.println("Enter number of players: ");
             int MAX_PLAYERS = input.nextInt();
+             System.out.println("Max players: " + MAX_PLAYERS);
+            ServerListener server = new ServerListener(MAX_PLAYERS);
             server.BuisnessLogic(MAX_PLAYERS);
         }
         else

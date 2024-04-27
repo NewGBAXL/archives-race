@@ -4,6 +4,7 @@
  */
 package AdvancedSocketThreaded;
 
+import java.net.Socket;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -29,10 +30,13 @@ public class SharedMemoryObject implements java.io.Serializable
     
     private int turn; // Variable to indicate whose turn it is
     
+    //public Socket clients[];
     private boolean isDirty = false;
+    public int startGame = 0;
     
-    public SharedMemoryObject(int numPlayers)
+    public SharedMemoryObject(int numPlayers, int sGame)
     {
+        //startGame = sGame;
         myLock = new ReentrantLock();
         playerPositions = new int[(numPlayers==0)?10:numPlayers];
         for (int i = 0; i < playerPositions.length; i++) {
@@ -44,10 +48,23 @@ public class SharedMemoryObject implements java.io.Serializable
         }
         for (int i = 0; i < spaceSpeed.length; i++) {
             spaceSpeed[i] = 1; // Initialize space speed to 1
+            switch ((int)(Math.random()*10)) {
+                case 0:
+                    spaceSpeed[i] = 0;
+                    break;
+                case 1:
+                    spaceSpeed[i] = 3;
+                    break;
+            }
         }
         monsterPosition = 0; // Initialize monster position
         turn = 0; // Initialize turn
         
+    }
+    
+    public int getNumPlayers()
+    {
+        return playerPositions.length;
     }
     
     public void addNumber(int n, int roll)
@@ -107,9 +124,9 @@ public class SharedMemoryObject implements java.io.Serializable
     public void nextTurn()
     {
         myLock.lock();
-        do {
+        //do {
             turn = (turn + 1) % playerPositions.length;
-        } while (playerPositions[turn] == 0);
+        //} while (playerPositions[turn] == 0);
         myLock.unlock();
     }
     
@@ -135,6 +152,8 @@ public class SharedMemoryObject implements java.io.Serializable
     public void setIsDirty(boolean d)
     {
         isDirty = d;
+         System.out.println("Is it dirty in set fcn" + isDirty);
+           
     }
     
     /**
@@ -161,7 +180,31 @@ public class SharedMemoryObject implements java.io.Serializable
     private String generateRow(int playerID)
     {
         StringBuilder row = new StringBuilder();
-        for (int i = 0; i < monsterPosition; i++) {
+        for (int i = 0; i < 100; ++i) {
+            if (playerPositions[playerID] == i) {
+                row.append(playerID + 1);
+            }
+            else if (monsterPosition == i) {
+                row.append("M");
+            }
+            else {
+                switch (spaceSpeed[i]){
+                    case 0:
+                        row.append("~");
+                        break;
+                    case 1:
+                        row.append("_");
+                        break;
+                    case 3:
+                        row.append(">");
+                        break;
+                        
+                }
+            }
+        }
+        
+        
+        /*for (int i = 0; i < monsterPosition; i++) {
             row.append("_");
         }
         row.append("M");
@@ -171,7 +214,7 @@ public class SharedMemoryObject implements java.io.Serializable
         for (int i = 0; i < playerID; i++) {
             row.append("_");
         }
-        row.append(playerID + 1);
+        row.append(playerID + 1);*/
         return row.toString();
     }
 }
